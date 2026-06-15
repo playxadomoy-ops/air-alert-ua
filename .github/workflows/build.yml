@@ -24,12 +24,6 @@ jobs:
         with:
           flutter-version: '3.22.2'
 
-      - name: Accept Android Licenses & Disable Telemetry
-        run: |
-          yes | flutter doctor --licenses
-          flutter config --no-analytics
-          dart --disable-analytics
-
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
@@ -37,10 +31,4 @@ jobs:
 
       - name: Flet Build APK
         run: |
-          flet build apk
-
-      - name: Upload APK Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: AirAlertUA-Release-APK
-          path: build/apk/*.apk
+          flet build apk --no-interactive
