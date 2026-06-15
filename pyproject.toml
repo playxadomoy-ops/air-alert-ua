@@ -7,3 +7,6 @@ app.icon = "icon.jpg"
 package_name = "com.xadamoy.airalertua"
 version_code = 1
 version_name = "1.0.0"
+[tool.flet.dependencies]
+telethon = "==1.35.0"
+requests = "==2.32.3"
