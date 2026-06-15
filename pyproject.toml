@@ -1,0 +1,9 @@
+[tool.flet]
+app.title = "Air Alert UA"
+app.name = "air_alert_ua"
+app.icon = "icon.jpg"
+
+[tool.flet.android]
+package_name = "com.xadamoy.airalertua"
+version_code = 1
+version_name = "1.0.0"
