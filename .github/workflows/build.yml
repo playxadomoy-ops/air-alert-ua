@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - master
   workflow_dispatch:
 
 jobs:
@@ -35,6 +34,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
+          flutter-version: '3.22.2'
           channel: 'stable'
 
       - name: Configure Flutter Paths
@@ -45,24 +45,13 @@ jobs:
       - name: Install Build Tools
         run: |
           python -m pip install --upgrade pip
-          pip install flet
+          pip install flet cookiecutter
 
       - name: Bundle Pure Python Dependencies
         run: |
-          # Створюємо офіційну папку залежностей для мобільного збирача Flet
-          mkdir -p __pypackages__
-          
-          # Завантажуємо ТІЛЬКИ чистий Python-код (без бінарників компілятора Linux)
-          pip install --target __pypackages__ --no-binary=:all: telethon pyaes rsa pyasn1
-          
-          # Видаляємо службову інформацію, яка викликає конфлікти архітектур в APK
-          rm -rf __pypackages__/*.dist-info __pypackages__/*.egg-info
-          find __pypackages__ -name "*.pyc" -delete
-          find __pypackages__ -name "__pycache__" -delete
+          # Примусово блокуємо зламану версію telethon 1.44.0 під час збірки
+          pip install "telethon!=1.44.0" -r requirements.txt
 
       - name: Flet Build APK
         run: |
-          # Запускаємо чисте автономне збирання.
-          # Флаг --no-Config-Check (якщо підтримується) або просто чистий запуск 
-          # змусить Flet взяти локальний пакет __pypackages__ і зібрати APK миттєво.
-          flet build apk .
+          flet build apk --release
