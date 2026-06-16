@@ -48,18 +48,15 @@ jobs:
           pip install flet
 
       - name: Inject Telethon Source Code Directly
-        uses: actions/checkout@v4
-        with:
-          repository: 'LonamiWebs/Telethon'
-          ref: 'master'
-          path: 'telethon_src'
-
-      - name: Move Telethon to project
         run: |
-          # Копіюємо папку telethon у корінь вашого проєкту
-          cp -r telethon_src/telethon .
-          # Видаляємо непотрібне сміття, щоб воно не потрапило в APK
-          rm -rf telethon_src
+          # Завантажуємо master-гілку Telethon у вигляді ZIP-архіву
+          curl -L https://github.com/LonamiWebs/Telethon/archive/refs/heads/master.zip -o telethon.zip
+          # Розпаковуємо архів
+          unzip -q telethon.zip
+          # Переміщуємо внутрішню папку бібліотеки telethon в корінь вашого проєкту
+          cp -r Telethon-master/telethon .
+          # Прибираємо за собою тимчасові файли
+          rm -rf telethon.zip Telethon-master
 
       - name: Flet Build APK
         run: |
