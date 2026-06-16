@@ -1,9 +1,16 @@
 name: Build Air Alert UA APK
-on: [push, workflow_dispatch]
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -11,7 +18,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.12'
 
       - name: Setup Java JDK
         uses: actions/setup-java@v4
@@ -23,36 +30,38 @@ jobs:
         uses: android-actions/setup-android@v3
 
       - name: Accept Android Licenses
-        run: |
-          yes | sdkmanager --licenses || true
+        run: yes | sdkmanager --licenses
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.5'
+          channel: 'stable'
 
       - name: Configure Flutter Paths
         run: |
-          echo "FLUTTER_ROOT=$FLUTTER_HOME" >> $GITHUB_ENV
           echo "$FLUTTER_HOME/bin" >> $GITHUB_PATH
+          echo "$FLUTTER_HOME/bin/cache/dart-sdk/bin" >> $GITHUB_PATH
 
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install flet==0.28.3 requests==2.32.3
+          pip install flet
 
       - name: Inject Telethon Source Code Directly
         uses: actions/checkout@v4
         with:
           repository: 'LonamiWebs/Telethon'
-          ref: 'v1.41.2'
+          ref: 'master' # Завантажуємо гарантовано існуючу головну гілку
           path: 'telethon_src'
 
       - name: Move Telethon to project
         run: |
+          # Копіюємо саму папку з модулем всередину вашого проєкту
           cp -r telethon_src/telethon .
+          # Очищаємо тимчасово завантажений репозиторій
           rm -rf telethon_src
 
       - name: Flet Build APK
         run: |
-          flet build apk
+          # Якщо головний файл лежить у підпапці, замініть "." на шлях до неї (наприклад, flet build apk src/)
+          flet build apk .
