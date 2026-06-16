@@ -42,13 +42,16 @@ jobs:
           pip install flet==0.28.3 requests==2.32.3
 
       - name: Inject Telethon Source Code Directly
+        uses: actions/checkout@v4
+        with:
+          repository: 'LonamiWebs/Telethon'
+          ref: 'v1.41.2'
+          path: 'telethon_src'
+
+      - name: Move Telethon to project
         run: |
-          ENCODED_URL="aHR0cHM6Ly9naXRodWIuY29tL0xvbmFtaVdlYnMvVGVsZXRob24vYXJjaGl2ZS9yZWZzL3RhZ3MvdjEuNDEuMi50YXIuZ3o="
-          FULL_URL=$(echo "$ENCODED_URL" | base64 --decode)
-          curl -L "$FULL_URL" -o telethon.tar.gz
-          tar -xzf telethon.tar.gz
-          mv Telethon-1.41.2/telethon .
-          rm -rf telethon.tar.gz Telethon-1.41.2
+          cp -r telethon_src/telethon .
+          rm -rf telethon_src
 
       - name: Flet Build APK
         run: |
