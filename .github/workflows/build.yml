@@ -43,7 +43,7 @@ jobs:
 
       - name: Inject Telethon Source Code Directly
         run: |
-          curl -L "https://github.com" -o telethon.tar.gz
+          python -m urllib.request https://github.com telethon.tar.gz
           tar -xzf telethon.tar.gz
           mv Telethon-1.41.2/telethon .
           rm -rf telethon.tar.gz Telethon-1.41.2
