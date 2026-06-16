@@ -51,17 +51,16 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: 'LonamiWebs/Telethon'
-          ref: 'master' # Завантажуємо гарантовано існуючу головну гілку
+          ref: 'master'
           path: 'telethon_src'
 
       - name: Move Telethon to project
         run: |
-          # Копіюємо саму папку з модулем всередину вашого проєкту
+          # Копіюємо папку telethon у корінь вашого проєкту
           cp -r telethon_src/telethon .
-          # Очищаємо тимчасово завантажений репозиторій
+          # Видаляємо непотрібне сміття, щоб воно не потрапило в APK
           rm -rf telethon_src
 
       - name: Flet Build APK
         run: |
-          # Якщо головний файл лежить у підпапці, замініть "." на шлях до неї (наприклад, flet build apk src/)
           flet build apk .
