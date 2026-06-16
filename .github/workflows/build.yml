@@ -47,17 +47,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install flet
 
-      - name: Inject Telethon Source Code Directly
-        run: |
-          # Завантажуємо master-гілку Telethon у вигляді ZIP-архіву
-          curl -L https://github.com/LonamiWebs/Telethon/archive/refs/heads/master.zip -o telethon.zip
-          # Розпаковуємо архів
-          unzip -q telethon.zip
-          # Переміщуємо внутрішню папку бібліотеки telethon в корінь вашого проєкту
-          cp -r Telethon-master/telethon .
-          # Прибираємо за собою тимчасові файли
-          rm -rf telethon.zip Telethon-master
-
       - name: Flet Build APK
         run: |
           flet build apk .
