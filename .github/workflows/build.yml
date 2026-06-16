@@ -47,8 +47,18 @@ jobs:
           python -m pip install --upgrade pip
           pip install flet
 
+      - name: Pre-install Telethon to Flet App Directory
+        run: |
+          # Flet автоматично пакує все, що лежить у папці з кодом.
+          # Ми встановлюємо чистий Python-код залежностей прямо у корінь проєкту.
+          pip install telethon pyaes rsa pyasn1 pyaes --target .
+          
+          # Видаляємо службові папки pip, щоб вони не заважали збірці і не збільшували APK
+          rm -rf *.dist-info __pycache__
+
       - name: Flet Build APK
         run: |
-          # Flet сам створить усі потрібні файли Flutter під капотом,
-          # завантажить чисті пакети pyaes та telethon і збере APK.
-          flet build apk . --pip-modules pyaes,telethon
+          # Тепер запускаємо чисту збірку без жодних прапорців --pip-modules.
+          # Оскільки всі файли бібліотек вже фізично лежать у папці проєкту, 
+          # Flet просто загорне їх в APK як ваш власний код.
+          flet build apk .
