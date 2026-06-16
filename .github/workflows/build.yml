@@ -26,18 +26,19 @@ jobs:
         run: |
           yes | sdkmanager --licenses || true
 
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.22.2'
+      - name: Install Latest Stable Flutter SDK
+        run: |
+          cd /opt
+          sudo wget https://googleapis.com
+          sudo tar xf flutter_linux_3.24.5-stable.tar.xz
+          echo "/opt/flutter/bin" >> $GITHUB_PATH
+          echo "FLUTTER_ROOT=/opt/flutter" >> $GITHUB_ENV
 
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install flet requests telethon
+          pip install flet==0.28.3 telethon==1.41.2 pyaes==1.6.1 requests==2.32.3
 
       - name: Flet Build APK
-        env:
-          FLUTTER_ROOT: ${{ env.FLUTTER_HOME }}
         run: |
           flet build apk --yes
