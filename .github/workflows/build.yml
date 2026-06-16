@@ -47,13 +47,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install flet
 
-      - name: Clean Flutter Cache
-        run: |
-          flutter clean
-          flutter pub get
-
       - name: Flet Build APK
         run: |
-          # Передаємо модулі строго через кому без пробілів.
-          # Це змушує Flet самостійно підготувати сумісні бінарні пакети для Android.
+          # Flet сам створить усі потрібні файли Flutter під капотом,
+          # завантажить чисті пакети pyaes та telethon і збере APK.
           flet build apk . --pip-modules pyaes,telethon
