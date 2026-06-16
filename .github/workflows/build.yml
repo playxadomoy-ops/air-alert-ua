@@ -40,8 +40,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install flet==0.28.3 requests==2.32.3
-          pip install --no-deps telethon==1.41.2
 
-      - name: Flet Build APK
+      - name: Inject Telethon Source Code Directly
         run: |
-          flet build apk
+          wget 
