@@ -47,9 +47,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install flet
 
+      - name: Clean Flutter Cache
+        run: |
+          flutter clean
+          flutter pub get
+
       - name: Flet Build APK
         run: |
-          # Ми передаємо залежності як аргументи команди. 
-          # Flet сам завантажить стабільні бінарні версії (wheels) з PyPI,
-          # які сумісні з мобільним Python на Android, ігноруючи ламані локальні Git-скрипти.
+          # Передаємо модулі строго через кому без пробілів.
+          # Це змушує Flet самостійно підготувати сумісні бінарні пакети для Android.
           flet build apk . --pip-modules pyaes,telethon
