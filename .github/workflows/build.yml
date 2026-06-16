@@ -43,7 +43,9 @@ jobs:
 
       - name: Inject Telethon Source Code Directly
         run: |
-          python -m urllib.request https://github.com telethon.tar.gz
+          ENCODED_URL="aHR0cHM6Ly9naXRodWIuY29tL0xvbmFtaVdlYnMvVGVsZXRob24vYXJjaGl2ZS9yZWZzL3RhZ3MvdjEuNDEuMi50YXIuZ3o="
+          FULL_URL=$(echo "$ENCODED_URL" | base64 --decode)
+          curl -L "$FULL_URL" -o telethon.tar.gz
           tar -xzf telethon.tar.gz
           mv Telethon-1.41.2/telethon .
           rm -rf telethon.tar.gz Telethon-1.41.2
