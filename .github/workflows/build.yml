@@ -1,56 +1,56 @@
-name: build
+name: Build Air Alert UA APK
 
 on:
   push:
     branches:
-      - main  # або вкажіть вашу головну гілку (наприклад, master), якщо вона інша
-  pull_request:
-    branches:
       - main
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    # 1. Завантажуємо вихідний код репозиторію
-    - name: Checkout Repository
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    # 2. Налаштовуємо Python версії 3.12
-    - name: Set up Python 3.12
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.12'
-        cache: 'pip' # вмикаємо кешування для прискорення наступних збірок
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
 
-    # 3. Налаштовуємо Flutter (необхідно для команди flet build)
-    - name: Set up Flutter
-      uses: subosito/flutter-action@v2
-      with:
-        channel: 'stable'
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
 
-    # 4. Встановлюємо Flet CLI
-    - name: Install Flet CLI
-      run: |
-        python -m pip install --upgrade pip
-        pip install flet
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
 
-    # 5. Крок, де виникала помилка (Bundle Pure Python Dependencies)
-    - name: Bundle Pure Python Dependencies
-      run: |
-        # Оновлюємо критичні утиліти збірки, яких немає за замовчуванням у Python 3.12
-        python -m pip install --upgrade pip setuptools wheel
-        
-        # Встановлюємо cookiecutter
-        pip install flet cookiecutter
-        
-        # Примусово встановлюємо застарілу залежність pyaes окремо
-        pip install pyaes
-        
-        # Блокуємо необхідну версію Telethon та встановлюємо інші залежності з вашого файлу
-        pip install "telethon==1.44.0" -r requirements.txt
+      - name: Accept Android Licenses
+        run: yes | sdkmanager --licenses
 
-    # 6. Збірка додатка Flet APK
-    - name: Flet Build APK
-      run: flet build apk --yes
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.22.2'
+          channel: 'stable'
+
+      - name: Configure Flutter Paths
+        run: |
+          echo "$FLUTTER_HOME/bin" >> $GITHUB_PATH
+          echo "$FLUTTER_HOME/bin/cache/dart-sdk/bin" >> $GITHUB_PATH
+
+      - name: Install Build Tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install flet cookiecutter
+
+      - name: Bundle Pure Python Dependencies
+        run: |
+          # Встановлюємо лише pyaes, щоб уникнути конфліктів шифрування в Android
+          pip install pyaes
+
+      - name: Flet Build APK
+        run: flet build apk --yes
