@@ -49,4 +49,6 @@ jobs:
 
       - name: Flet Build APK
         run: |
-          flet build apk .
+          # Флаг --pip-modules примусово качає чисті стабільні пакети з PyPI, 
+          # повністю ігноруючи файл requirements.txt та помилки Git.
+          flet build apk . --pip-modules pyaes telethon
