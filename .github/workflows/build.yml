@@ -37,5 +37,7 @@ jobs:
           pip install flet requests telethon
 
       - name: Flet Build APK
+        env:
+          FLUTTER_ROOT: ${{ env.FLUTTER_HOME }}
         run: |
-          flet build apk --yes --no-flutter-install
+          flet build apk --yes
