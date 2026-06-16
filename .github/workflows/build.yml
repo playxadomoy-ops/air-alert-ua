@@ -26,13 +26,15 @@ jobs:
         run: |
           yes | sdkmanager --licenses || true
 
-      - name: Install Latest Stable Flutter SDK
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.5'
+
+      - name: Configure Flutter Paths
         run: |
-          cd /opt
-          sudo wget https://googleapis.com
-          sudo tar xf flutter_linux_3.24.5-stable.tar.xz
-          echo "/opt/flutter/bin" >> $GITHUB_PATH
-          echo "FLUTTER_ROOT=/opt/flutter" >> $GITHUB_ENV
+          echo "FLUTTER_ROOT=$FLUTTER_HOME" >> $GITHUB_ENV
+          echo "$FLUTTER_HOME/bin" >> $GITHUB_PATH
 
       - name: Install Dependencies
         run: |
