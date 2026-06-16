@@ -49,6 +49,8 @@ jobs:
 
       - name: Bundle Pure Python Dependencies
         run: |
+          # Перед завантаженням основних пакетів, примусово ставимо pyaes
+          pip install pyaes
           # Примусово блокуємо зламану версію telethon 1.44.0 під час збірки
           pip install "telethon!=1.44.0" -r requirements.txt
 
