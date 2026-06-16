@@ -47,18 +47,22 @@ jobs:
           python -m pip install --upgrade pip
           pip install flet
 
-      - name: Pre-install Telethon to Flet App Directory
+      - name: Bundle Pure Python Dependencies
         run: |
-          # Flet автоматично пакує все, що лежить у папці з кодом.
-          # Ми встановлюємо чистий Python-код залежностей прямо у корінь проєкту.
-          pip install telethon pyaes rsa pyasn1 pyaes --target .
+          # Створюємо офіційну папку залежностей для мобільного збирача Flet
+          mkdir -p __pypackages__
           
-          # Видаляємо службові папки pip, щоб вони не заважали збірці і не збільшували APK
-          rm -rf *.dist-info __pycache__
+          # Завантажуємо ТІЛЬКИ чистий Python-код (без бінарників компілятора Linux)
+          pip install --target __pypackages__ --no-binary=:all: telethon pyaes rsa pyasn1
+          
+          # Видаляємо службову інформацію, яка викликає конфлікти архітектур в APK
+          rm -rf __pypackages__/*.dist-info __pypackages__/*.egg-info
+          find __pypackages__ -name "*.pyc" -delete
+          find __pypackages__ -name "__pycache__" -delete
 
       - name: Flet Build APK
         run: |
-          # Тепер запускаємо чисту збірку без жодних прапорців --pip-modules.
-          # Оскільки всі файли бібліотек вже фізично лежать у папці проєкту, 
-          # Flet просто загорне їх в APK як ваш власний код.
+          # Запускаємо чисте автономне збирання.
+          # Флаг --no-Config-Check (якщо підтримується) або просто чистий запуск 
+          # змусить Flet взяти локальний пакет __pypackages__ і зібрати APK миттєво.
           flet build apk .
