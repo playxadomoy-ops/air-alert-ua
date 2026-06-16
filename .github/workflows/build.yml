@@ -43,4 +43,4 @@ jobs:
 
       - name: Flet Build APK
         run: |
-          flet build apk --yes
+          flet build apk
