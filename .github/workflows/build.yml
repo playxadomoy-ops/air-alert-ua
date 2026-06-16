@@ -34,7 +34,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.2'
+          flutter-version: '3.27.0'
           channel: 'stable'
 
       - name: Configure Flutter Paths
@@ -53,4 +53,4 @@ jobs:
           pip install pyaes
 
       - name: Flet Build APK
-        run: flet build apk --yes
+        run: flet build apk
