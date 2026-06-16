@@ -43,10 +43,10 @@ jobs:
 
       - name: Inject Telethon Source Code Directly
         run: |
-          wget https://github.com
-          tar -xzf v1.41.2.tar.gz
+          curl -L "https://github.com" -o telethon.tar.gz
+          tar -xzf telethon.tar.gz
           mv Telethon-1.41.2/telethon .
-          rm -rf v1.41.2.tar.gz Telethon-1.41.2
+          rm -rf telethon.tar.gz Telethon-1.41.2
 
       - name: Flet Build APK
         run: |
