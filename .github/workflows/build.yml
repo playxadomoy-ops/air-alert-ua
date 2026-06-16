@@ -47,27 +47,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install flet
 
-      - name: Download Telethon and Dependencies Directly
-        run: |
-          # Створюємо чисту тимчасову папку і завантажуємо туди вихідний код пакетів
-          mkdir -p temp_packages
-          pip download telethon pyaes --no-binary=:all: --no-deps -d temp_packages
-          
-          # Розпаковуємо завантажені архіви в корінь проєкту
-          cd temp_packages
-          for f in *.tar.gz; do tar -xzf "$f"; done
-          for f in *.zip; do unzip -q "$f"; done
-          
-          # Переміщуємо чисті папки модулів до вашого коду main.py
-          cd ..
-          cp -r temp_packages/Telethon-*/telethon .
-          cp -r temp_packages/pyaes-*/pyaes .
-          
-          # Видаляємо тимчасові файли
-          rm -rf temp_packages
-
       - name: Flet Build APK
         run: |
-          # Тепер додаток збирається без жодних зовнішніх завантажень пакетів, 
-          # оскільки telethon та pyaes вже лежать як локальні папки поруч із вашим main.py
-          flet build apk .
+          # Ми передаємо залежності як аргументи команди. 
+          # Flet сам завантажить стабільні бінарні версії (wheels) з PyPI,
+          # які сумісні з мобільним Python на Android, ігноруючи ламані локальні Git-скрипти.
+          flet build apk . --pip-modules pyaes,telethon
