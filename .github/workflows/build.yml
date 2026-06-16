@@ -53,4 +53,4 @@ jobs:
           pip install "telethon!=1.44.0" -r requirements.txt
 
       - name: Flet Build APK
-        run: flet build apk
+        run: flet build apk --yes
