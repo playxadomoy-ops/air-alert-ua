@@ -18,11 +18,12 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+          cache: 'pip'
 
       - name: Setup Java JDK
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
+          distribution: 'zulu'
           java-version: '17'
 
       - name: Set up Android SDK
@@ -34,23 +35,23 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.27.0'
           channel: 'stable'
 
       - name: Configure Flutter Paths
         run: |
           echo "$FLUTTER_HOME/bin" >> $GITHUB_PATH
-          echo "$FLUTTER_HOME/bin/cache/dart-sdk/bin" >> $GITHUB_PATH
+          echo "ANDROID_HOME=$ANDROID_HOME" >> $GITHUB_ENV
 
       - name: Install Build Tools
         run: |
           python -m pip install --upgrade pip
-          pip install flet cookiecutter
+          pip install flet
 
       - name: Bundle Pure Python Dependencies
         run: |
-          # Встановлюємо лише pyaes, щоб уникнути конфліктів шифрування в Android
-          pip install pyaes
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt --target src/
+          fi
 
       - name: Flet Build APK
-        run: flet build apk
+        run: flet build apk --yes
