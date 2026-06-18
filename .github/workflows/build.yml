@@ -60,4 +60,11 @@ jobs:
           fi
 
       - name: Flet Build APK
-        run: flet build apk --yes
+        run: |
+          # Тимчасово ховаємо requirements.txt, щоб flet build не намагався ставити пакети повторно всередині Android
+          if [ -f requirements.txt ]; then mv requirements.txt requirements.txt.bak; fi
+          
+          flet build apk --yes
+          
+          # Повертаємо файл назад (про всяк випадок для наступних кроків)
+          if [ -f requirements.txt.bak ]; then mv requirements.txt.bak requirements.txt; fi
