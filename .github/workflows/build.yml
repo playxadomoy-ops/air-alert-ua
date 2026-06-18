@@ -66,5 +66,11 @@ jobs:
           
           flet build apk --yes
           
-          # Повертаємо файл назад (про всяк випадок для наступних кроків)
+          # Повертаємо файл назад
           if [ -f requirements.txt.bak ]; then mv requirements.txt.bak requirements.txt; fi
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Air-Alert-UA-Release
+          path: build/apk/*.apk
