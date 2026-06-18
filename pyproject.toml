@@ -2,6 +2,7 @@
 app.title = "Air Alert UA"
 app.name = "air_alert_ua"
 app.icon = "icon.jpg"
+
 compile.app = false
 compile.packages = false
 
@@ -9,7 +10,3 @@ compile.packages = false
 package_name = "com.xadamoy.airalertua"
 version_code = 1
 version_name = "1.0.0"
-
-[tool.flet.dependencies]
-telethon = "==1.43.0"
-requests = "==2.32.3"
