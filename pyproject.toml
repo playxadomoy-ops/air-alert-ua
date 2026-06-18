@@ -3,9 +3,6 @@ app.title = "Air Alert UA"
 app.name = "air_alert_ua"
 app.icon = "icon.jpg"
 
-compile.app = false
-compile.packages = false
-
 [tool.flet.android]
 package_name = "com.xadamoy.airalertua"
 version_code = 1
