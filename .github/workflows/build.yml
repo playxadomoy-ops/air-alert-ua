@@ -60,4 +60,4 @@ jobs:
           fi
 
       - name: Flet Build APK
-        run: flet build apk --target-arch arm64-v8a --yes
+        run: flet build apk --yes
