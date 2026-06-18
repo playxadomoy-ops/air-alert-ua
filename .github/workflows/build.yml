@@ -44,14 +44,18 @@ jobs:
 
       - name: Install Build Tools
         run: |
-          python -m pip install --upgrade pip setuptools wheel hatchling
+          python -m pip install --upgrade pip setuptools wheel
           pip install flet
 
       - name: Bundle Pure Python Dependencies
         run: |
           if [ -f requirements.txt ]; then
-            python -m pip install --upgrade pip setuptools wheel hatchling
-            pip install --target src/ --no-build-isolation -r requirements.txt
+            python -m pip install --upgrade pip setuptools wheel
+            # 1. Встановлюємо telethon та інші пакети з використанням готових бінарників (.whl)
+            pip install --target src/ --no-compile -r requirements.txt || true
+            
+            # 2. Окремо доставляємо pyaes з вихідного коду (source distribution) безпосередньо в src/
+            pip install --target src/ --no-compile --no-binary pyaes pyaes
           fi
 
       - name: Flet Build APK
