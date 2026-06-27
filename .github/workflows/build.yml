@@ -1,9 +1,10 @@
-name: Build Air Alert UA APK
+name: Build Flet Android App
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -11,66 +12,37 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1. Клонуємо репозиторій із кодом проєкту
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-          cache: 'pip'
-
-      - name: Setup Java JDK
+      # 2. Налаштовуємо Java (необхідна для компіляції Android APK)
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
           java-version: '17'
+          distribution: 'temurin'
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Accept Android Licenses
-        run: yes | sdkmanager --licenses
-
-      - name: Install Linux Compatibility Libraries
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y lib32z1 lib32ncurses6 lib32stdc++6
-
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
+      # 3. Налаштовуємо Python
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          channel: 'stable'
+          python-version: '3.11'
 
-      - name: Configure Flutter Paths
+      # 4. Оновлюємо pip та встановлюємо вказану версію flet у середовище збірки
+      - name: Install build tools
         run: |
-          echo "$FLUTTER_HOME/bin" >> $GITHUB_PATH
-          echo "ANDROID_HOME=$ANDROID_HOME" >> $GITHUB_ENV
+          python -m pip install --upgrade pip
+          pip install flet==0.23.2
 
-      - name: Install Build Tools
+      # 5. Збираємо APK, автоматично пакуючи всередину telethon та requests з вашого файлу
+      - name: Build Android APK
         run: |
-          python -m pip install --upgrade pip setuptools wheel hatchling
-          pip install flet
+          flet build apk --package requirements.txt
 
-      - name: Bundle Pure Python Dependencies
-        run: |
-          if [ -f requirements.txt ]; then
-            python -m pip install --upgrade pip setuptools wheel hatchling
-            pip install --target src/ --no-build-isolation -r requirements.txt
-          fi
-
-      - name: Flet Build APK
-        run: |
-          # Тимчасово ховаємо requirements.txt, щоб flet build не намагався ставити пакети повторно всередині Android
-          if [ -f requirements.txt ]; then mv requirements.txt requirements.txt.bak; fi
-          
-          flet build apk --yes
-          
-          # Повертаємо файл назад
-          if [ -f requirements.txt.bak ]; then mv requirements.txt.bak requirements.txt; fi
-
+      # 6. Зберігаємо готовий файл додатка в артефакти GitHub Actions
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Air-Alert-UA-Release
+          name: air-alert-app
           path: build/apk/*.apk
