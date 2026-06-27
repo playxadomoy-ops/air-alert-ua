@@ -40,6 +40,6 @@ jobs:
       run: |
         pip install --target . "telethon==1.41.2" pyaes requests==2.32.3
 
-    # 6. Запускаємо фінальну збірку Android додатка
+    # 6. Запускаємо фінальну збірку Android додатка (без недопустимого прапорця --yes)
     - name: Flet Build APK
-      run: flet build apk --yes
+      run: flet build apk
