@@ -7,5 +7,4 @@ app.icon = "icon.jpg"
 package_name = "com.xadamoy.airalertua"
 version_code = 1
 version_name = "1.0.0"
-# Вказуємо Flet використовувати наш маніфест з дозволом на інтернет
-manifest_path = "AndroidManifest.xml" 
+
