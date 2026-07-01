@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
   workflow_dispatch:
 
 jobs:
@@ -21,21 +18,31 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+          cache: 'pip'
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
+          cache: true
 
       - name: Install Build Tools and Flet CLI
         run: |
           python -m pip install --upgrade pip
-          pip install flet
-
-      - name: Pre-package Telethon and Dependencies
-        run: |
-          # Ваш поточний скрипт попереднього пакування залежностей
-          # (Залиште тут ті команди, які у вас уже були)
+          pip install flet telethon
 
       - name: Flet Build APK
-        run: flet build apk --flutter-build-args "--android-skip-build-dependency-validation"
+        run: |
+          flet build apk --flutter-build-args "--android-skip-build-dependency-validation"
+
+      - name: Upload APK Artifact
+        uses: actions/artifacts@v4
+        with:
+          name: air-alert-ua-apk
+          path: build/apk/*.apk
